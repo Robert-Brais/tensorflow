@@ -27,10 +27,11 @@ def log_specgram(audio, sample_rate, window_size=20,
 
 def main():
     # set the path
-    train_audio_path = 'C:\\Users\\rober\\Documents\\Projects\\speech_dataset'
-    filename = '\\yes\\0a7c2a8d_nohash_0.wav'
+    # train_audio_path = 'C:\\Users\\rober\\Documents\\Projects\\speech_dataset'
+    # filename = '\\yes\\0a7c2a8d_nohash_0.wav'
+    train_audio_path = 'C:\\Users\\rober\\Documents\\Projects\\vad_dataset\\'
+    filename = 'chunk-00.wav'
     sample_rate, samples = wavfile.read(str(train_audio_path) + filename)
-
     freqs, times, spectrogram = log_specgram(samples, sample_rate)
 
     # Plot
@@ -38,7 +39,8 @@ def main():
     ax1 = fig.add_subplot(211)
     ax1.set_title('Raw wave of ' + filename)
     ax1.set_ylabel('Amplitude')
-    ax1.plot(np.linspace(0, sample_rate / len(samples), sample_rate), samples)
+    # ax1.plot(np.linspace(0, sample_rate / len(samples), sample_rate), samples)
+    ax1.plot(np.linspace(0,  len(samples) / sample_rate, len(samples)), samples)
 
     ax2 = fig.add_subplot(212)
     ax2.imshow(spectrogram.T, aspect='auto', origin='lower',

@@ -135,9 +135,11 @@ def main(args):
         sys.exit(1)
     audio, sample_rate = read_wave(args[1])
     vad = webrtcvad.Vad(int(args[0]))
-    frames = frame_generator(30, audio, sample_rate)
+    # frames = frame_generator(30, audio, sample_rate)
+    frames = frame_generator(20, audio, sample_rate) #increase resolution from 30 ms to 20 ms
     frames = list(frames)
-    segments = vad_collector(sample_rate, 30, 300, vad, frames)
+    # segments = vad_collector(sample_rate, 30, 300, vad, frames)
+    segments = vad_collector(sample_rate, 20, 200, vad, frames) #reduce padding from 300 ms to 200 ms
     for i, segment in enumerate(segments):
         path = 'C:\\Users\\rober\\Documents\\Projects\\vad_dataset\\chunk-%002d.wav' % (i,)
         print(' Writing %s' % (path,))
@@ -146,4 +148,4 @@ def main(args):
 
 if __name__ == '__main__':
     # main(sys.argv[1:])
-    main(['1','C:\\Users\\rober\\Documents\\Projects\\annotation_dataset\\yes\\2296b1af_nohash_0.wav'])
+    main(['0','C:\\Users\\rober\\Documents\\Projects\\speech_dataset\\yes\\0a7c2a8d_nohash_0.wav'])
