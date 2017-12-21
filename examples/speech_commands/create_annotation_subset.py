@@ -1,33 +1,11 @@
 '''
-HelloWorld example using TensorFlow library.
-Author: Aymeric Damien
-Project: https://github.com/aymericdamien/TensorFlow-Examples/
-'''
-
-from __future__ import print_function
-
-import tensorflow as tf
-
-# Simple hello world using TensorFlow
-
-# Create a Constant op
-# The op is added as a node to the default graph.
-#
-# The value returned by the constructor represents the output
-# of the Constant op.
-hello = tf.constant('Hello, TensorFlow!')
-
-# Start tf session
-sess = tf.Session()
-
-# Run the op
-print(sess.run(hello))
-
-'''
 Create Annotation Subset
 -Defines a subset of the speech command data set to be used for manual annotations
 Robert Brais
 '''
+from __future__ import print_function
+
+import tensorflow as tf
 
 import input_data
 import models
@@ -35,7 +13,7 @@ import models
 import os.path
 import shutil
 
-def main():
+def get_set(set_type):
     wanted_words = 'yes,no,up,down,left,right,on,off,stop,go'
     sample_rate = 16000
     clip_duration_ms = 1000
@@ -70,23 +48,42 @@ def main():
     # print('CREATE ANNOTATION SUBSET: Printing data then labels.')
     # print(data)
     # print(labels)
-    size = audio_processor.set_size('testing')
+    size = audio_processor.set_size(set_type)
     print('CREATE ANNOTATION SUBSET: Printing annotation set size')
     print(size)
 
-    annotation_listing = audio_processor.data_index['testing']
+    annotation_listing = audio_processor.data_index[set_type]
     print('CREATE ANNOTATION SUBSET: Printing annotation set names')
     print(annotation_listing)
 
+    return annotation_listing
+
+def save_set(annotation_listing,dest_directory):
     print('CREATE ANNOTATION SUBSET: Copying annotation subset to Projects folder')
-    dest_directory = 'C:\\Users\\rober\\Documents\\Projects\\annotation_dataset\\'
     count = 0
     for annotation_details in annotation_listing:
         wav_path = annotation_details['file']
         dest_path = os.path.join(dest_directory,annotation_details['label'])
         shutil.copy(wav_path,dest_path)
-        count = count + 1
-    print(100.0 * count/size, '% of files copied')
+
+def main():
+    # Simple hello world using TensorFlow
+
+    # Create a Constant op
+    # The op is added as a node to the default graph.
+    #
+    # The value returned by the constructor represents the output
+    # of the Constant op.
+    hello = tf.constant('Hello, TensorFlow!')
+
+    # Start tf session
+    sess = tf.Session()
+
+    # Run the op
+    print(sess.run(hello))
+    training_listing = get_set('testing')
+    dest_directory = 'C:\\Users\\rober\\Documents\\Projects\\annotation_dataset\\'
+    save_set(training_listing,dest_directory)
 
 if __name__ == "__main__":
     main()
