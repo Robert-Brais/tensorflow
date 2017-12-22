@@ -21,16 +21,7 @@ def custom_fft(y, fs):
     # FFT is also complex, to we take just the real part (abs)
     return xf, vals
 
-def main():
-    train_audio_path = 'C:\\Users\\rober\\Documents\\Projects\\speech_dataset'
-    filename = '\\happy\\0b09edd3_nohash_0.wav'
-    new_sample_rate = 8000
-
-    #resample
-    sample_rate, samples = wavfile.read(str(train_audio_path) + filename)
-    resampled = signal.resample(samples, int(new_sample_rate / sample_rate * samples.shape[0]))
-
-    #plot
+def comparison_plot(samples,sample_rate,resampled,new_sample_rate):
     xf, vals = custom_fft(samples, sample_rate)
     plt.figure(figsize=(12, 4))
     plt.title('FFT of recording sampled with ' + str(sample_rate) + ' Hz')
@@ -46,6 +37,17 @@ def main():
     plt.xlabel('Frequency')
     plt.grid()
     plt.show()
+
+def main():
+    filename = 'C:\\Users\\rober\\Documents\\Projects\\speech_dataset\\happy\\0b09edd3_nohash_0.wav'
+    new_sample_rate = 8000
+
+    #resample
+    sample_rate, samples = wavfile.read(filename)
+    resampled = signal.resample(samples, int(new_sample_rate / sample_rate * samples.shape[0]))
+
+    #plot
+    comparison_plot(samples, sample_rate, resampled, new_sample_rate)
 
 if __name__ == '__main__':
     main()
