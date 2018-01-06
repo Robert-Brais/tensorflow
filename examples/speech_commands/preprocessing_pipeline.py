@@ -16,7 +16,9 @@ import resample
 from vad import frame_generator
 from vad import vad_collector
 from vad import write_wave
+from vad import read_wave
 import webrtcvad
+import plotSpectogram
 
 def main():
     dest_directory = 'C:\\Users\\rober\\Documents\\Projects\\vad_dataset\\'
@@ -29,32 +31,37 @@ def main():
     new_sample_rate = 8000
 
     #vad
-    vad_agressiveness = 0 #0-3
-    vad = webrtcvad.Vad(vad_agressiveness)
+    src_directory = 'C:\\Users\\rober\\Documents\\Projects\\resample_dataset\\'
+    vad_agressiveness = 1 #0-3
 
     #preprocessing loop
     for training_sample in training_set:
 
-        #resample
-        sample_rate, samples = wavfile.read(training_sample['file'])
-        resampled = signal.resample(samples, int(new_sample_rate / sample_rate * samples.shape[0]))
+        #path to result file
         head,id = path.split(training_sample['file'])
-        partial_path = path.join(dest_directory, training_sample['label'])
-        full_path = path.join(partial_path, id)
-        resampled = np.asarray(resampled, dtype=np.int16)
-        # wavfile.write(full_path,new_sample_rate,resampled)
+        full_id = path.join(training_sample['label'],id)
+        dest_path = path.join(dest_directory, full_id)
+
+        #resample
+        # sample_rate, samples = wavfile.read(training_sample['file'])
+        # resampled = signal.resample(samples, int(new_sample_rate / sample_rate * samples.shape[0]))
+        # resampled = np.asarray(resampled, dtype=np.int16)
+        # wavfile.write(dest_path,new_sample_rate,resampled)
         #debug plots
         # resample.comparison_plot(samples, sample_rate, resampled, new_sample_rate)
 
         #vad
+        audio, sample_rate = read_wave(path.join(src_directory,full_id))
         vad = webrtcvad.Vad(vad_agressiveness)
-        frames = frame_generator(10, resampled, new_sample_rate)
+        frames = frame_generator(10, audio, sample_rate)
         frames = list(frames)
-        segments = vad_collector(new_sample_rate, 10, 300, vad, frames)
+        segments = vad_collector(sample_rate, 10, 300, vad, frames)
         for i, segment in enumerate(segments):
             chunk_name = '_%002d.wav' % (i,)
-            full_path = full_path.replace('.wav', chunk_name)
-            write_wave(full_path, segment, new_sample_rate)
+            dest_path = dest_path.replace('.wav', chunk_name)
+            write_wave(dest_path, segment, new_sample_rate)
+            #debug plot
+            # plotSpectogram.main(dest_directory,full_id.replace('.wav', chunk_name))
 
 if __name__ == '__main__':
     main()

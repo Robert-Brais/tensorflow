@@ -25,13 +25,8 @@ def log_specgram(audio, sample_rate, window_size=20,
                                     detrend=False)
     return freqs, times, np.log(spec.T.astype(np.float32) + eps)
 
-def main():
-    # set the path
-    # train_audio_path = 'C:\\Users\\rober\\Documents\\Projects\\speech_dataset'
-    # filename = '\\yes\\0a7c2a8d_nohash_0.wav'
-    train_audio_path = 'C:\\Users\\rober\\Documents\\Projects\\vad_dataset\\'
-    filename = 'chunk-00.wav'
-    sample_rate, samples = wavfile.read(str(train_audio_path) + filename)
+def main(audio_path,filename):
+    sample_rate, samples = wavfile.read(str(audio_path) + filename)
     freqs, times, spectrogram = log_specgram(samples, sample_rate)
 
     # Plot
@@ -54,6 +49,12 @@ def main():
     plt.show()
 
 if __name__ == "__main__":
-    main()
+    # set the path
+    # train_audio_path = 'C:\\Users\\rober\\Documents\\Projects\\resample_dataset'
+    train_audio_path = 'C:\\Users\\rober\\Documents\\Projects\\vad_dataset'
+    # filename = '\\down\\bdee441c_nohash_3.wav'
+    # filename = '\\yes\\2296b1af_nohash_0_00.wav'
+    filename = '\\chunk-00.wav'
+    main(train_audio_path,filename)
 
 
